@@ -18,7 +18,7 @@ import atexit
 from collections import deque
 from datetime import timedelta
 from math import ceil
-from sys import stderr
+from sys import stderr, platform
 try:
     from time import monotonic
 except ImportError:
@@ -30,7 +30,18 @@ __version__ = '1.5'
 HIDE_CURSOR = '\x1b[?25l'
 SHOW_CURSOR = '\x1b[?25h'
 
-
+if platform == 'win32':
+    try:
+        from platform import win32_ver
+        from distutils.version import LooseVersion
+        if LooseVersion(win32_ver()[1]) >= LooseVersion('10.0.10586'):
+            import ctypes
+            ctypes.windll.kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+    except:
+        # yeah yeah -> justified use case
+        pass
+    
+    
 class Infinite(object):
     file = stderr
     sma_window = 10         # Simple Moving Average window
