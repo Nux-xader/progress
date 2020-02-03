@@ -29,8 +29,12 @@ __version__ = '1.5'
 
 HIDE_CURSOR = '\x1b[?25l'
 SHOW_CURSOR = '\x1b[?25h'
+STLINE = '\r\x1b[K'
 
 if platform == 'win32':
+    HIDE_CURSOR = ''
+    SHOW_CURSOR = ''
+    STLINE = '\r'
     try:
         from platform import win32_ver
         from distutils.version import LooseVersion
@@ -100,7 +104,7 @@ class Infinite(object):
 
     def clearln(self):
         if self.file and self.is_tty():
-            print('\r\x1b[K', end='', file=self.file)
+            print(STLINE, end='', file=self.file)
 
     def write(self, s):
         if self.file and self.is_tty():
